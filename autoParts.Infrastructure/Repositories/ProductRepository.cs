@@ -28,16 +28,33 @@ public class ProductRepository : IProductRepository
 
     public Product GetProductById(long id)
     {
-        throw new NotImplementedException();
+        var product = _context.Set<Product>().Find(id);
+        
+        return product;
     }
 
     public void DeleteProduct(long id)
     {
-        throw new NotImplementedException();
+        var product = _context.Set<Product>().Find(id);
+        _context.Set<Product>().Remove(product);
+        _context.SaveChanges();
     }
 
     public void UpdateProduct(Product product)
     {
-        throw new NotImplementedException();
+        var productToUpdate = _context.Set<Product>().Find(product.Id);
+        if (productToUpdate == null)
+        {
+            // Handle the case where the product is not found. 
+            // For example, you could throw a custom exception or return without doing anything.
+            throw new KeyNotFoundException($"Product with ID {product.Id} not found.");
+        }
+        else
+        {
+            productToUpdate.Name = product.Name;
+            productToUpdate.Description = product.Description;
+            productToUpdate.Price = product.Price;
+            _context.SaveChanges();
+        }
     }
 }
